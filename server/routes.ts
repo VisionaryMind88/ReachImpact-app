@@ -239,6 +239,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/campaigns/:id", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const campaignId = parseInt(req.params.id);
+      if (isNaN(campaignId)) {
+        return res.status(400).json({ message: "Invalid campaign ID" });
+      }
+      
+      const campaign = await storage.getCampaign(campaignId);
+      
+      if (!campaign) {
+        return res.status(404).json({ message: "Campaign not found" });
+      }
+      
+      if (campaign.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      return res.json(campaign);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get campaign" });
+    }
+  });
+
   app.post("/api/campaigns", async (req: Request, res: Response) => {
     try {
       if (!req.session.userId) {
@@ -257,6 +284,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid campaign data", errors: error.errors });
       }
       return res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+  
+  app.put("/api/campaigns/:id", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const campaignId = parseInt(req.params.id);
+      if (isNaN(campaignId)) {
+        return res.status(400).json({ message: "Invalid campaign ID" });
+      }
+      
+      // Get the campaign to verify ownership
+      const existingCampaign = await storage.getCampaign(campaignId);
+      
+      if (!existingCampaign) {
+        return res.status(404).json({ message: "Campaign not found" });
+      }
+      
+      if (existingCampaign.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      // Parse and validate the update data
+      const updateSchema = insertCampaignSchema.partial().omit({ id: true, userId: true, createdAt: true });
+      const campaignData = updateSchema.parse(req.body);
+      
+      // Update the campaign
+      const updatedCampaign = await storage.updateCampaign(campaignId, campaignData);
+      
+      if (!updatedCampaign) {
+        return res.status(500).json({ message: "Failed to update campaign" });
+      }
+      
+      return res.json(updatedCampaign);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid campaign data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to update campaign" });
+    }
+  });
+  
+  app.delete("/api/campaigns/:id", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const campaignId = parseInt(req.params.id);
+      if (isNaN(campaignId)) {
+        return res.status(400).json({ message: "Invalid campaign ID" });
+      }
+      
+      // Get the campaign to verify ownership
+      const existingCampaign = await storage.getCampaign(campaignId);
+      
+      if (!existingCampaign) {
+        return res.status(404).json({ message: "Campaign not found" });
+      }
+      
+      if (existingCampaign.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      // Delete the campaign
+      const success = await storage.deleteCampaign(campaignId);
+      
+      if (!success) {
+        return res.status(500).json({ message: "Failed to delete campaign" });
+      }
+      
+      return res.json({ success: true });
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to delete campaign" });
     }
   });
 

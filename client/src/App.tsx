@@ -22,6 +22,10 @@ import Settings from "@/pages/settings";
 import Billing from "@/pages/billing";
 import NotFound from "@/pages/not-found";
 
+// Import campaign pages
+import NewCampaign from "@/pages/campaigns/new";
+import CampaignDetail from "@/pages/campaigns/[id]";
+
 function Router() {
   return (
     <Switch>
@@ -33,6 +37,8 @@ function Router() {
       <Route path="/contacts" component={Contacts} />
       <Route path="/calls" component={Calls} />
       <Route path="/campaigns" component={Campaigns} />
+      <Route path="/campaigns/new" component={NewCampaign} />
+      <Route path="/campaigns/:id" component={CampaignDetail} />
       <Route path="/analytics" component={Analytics} />
       <Route path="/settings" component={Settings} />
       <Route path="/billing" component={Billing} />
