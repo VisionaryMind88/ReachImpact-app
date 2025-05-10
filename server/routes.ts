@@ -5,6 +5,7 @@ import { insertUserSchema, insertContactSchema, insertCampaignSchema, insertCall
 import { z } from "zod";
 import OpenAI from "openai";
 import session from "express-session";
+import { makeOutboundCall, getCallStatus as getTwilioCallStatus, endCall as endTwilioCall, sendSms } from "./twilio";
 
 // Extend Express Request to include session
 declare module "express" {
@@ -298,6 +299,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid call data", errors: error.errors });
       }
       return res.status(500).json({ message: "Failed to create call" });
+    }
+  });
+  
+  // Twilio API Routes
+  
+  // Make a call using Twilio
+  app.post("/api/call", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { phoneNumber, contactId, campaignId, callbackUrl, language } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+      
+      // Verify the contact belongs to this user if contactId is provided
+      if (contactId) {
+        const contact = await storage.getContact(contactId);
+        if (!contact || contact.userId !== req.session.userId) {
+          return res.status(403).json({ message: "Unauthorized access to contact" });
+        }
+      }
+      
+      // Make the call using Twilio
+      const callStatus = await makeOutboundCall(phoneNumber, {
+        callbackUrl,
+        language,
+        record: true,
+        statusCallback: `${req.protocol}://${req.get('host')}/api/call-status-callback`,
+      });
+      
+      // Deduct credits (in a real app, we would deduct credits here)
+      // For now, we're just checking if the user has credits
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (user.aiCredits <= 0) {
+        return res.status(402).json({ message: "Insufficient credits" });
+      }
+      
+      return res.json(callStatus);
+    } catch (error: any) {
+      console.error("Error making call:", error);
+      return res.status(500).json({ 
+        message: "Failed to make call",
+        error: error.message || "Unknown error"
+      });
+    }
+  });
+  
+  // Get call status
+  app.get("/api/call/:sid", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { sid } = req.params;
+      
+      if (!sid) {
+        return res.status(400).json({ message: "Call SID is required" });
+      }
+      
+      const callStatus = await getTwilioCallStatus(sid);
+      
+      return res.json(callStatus);
+    } catch (error: any) {
+      console.error("Error getting call status:", error);
+      return res.status(500).json({ 
+        message: "Failed to get call status",
+        error: error.message || "Unknown error"
+      });
+    }
+  });
+  
+  // End call
+  app.post("/api/call/:sid/end", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { sid } = req.params;
+      
+      if (!sid) {
+        return res.status(400).json({ message: "Call SID is required" });
+      }
+      
+      const result = await endTwilioCall(sid);
+      
+      return res.json(result);
+    } catch (error: any) {
+      console.error("Error ending call:", error);
+      return res.status(500).json({ 
+        message: "Failed to end call",
+        error: error.message || "Unknown error"
+      });
+    }
+  });
+  
+  // Send SMS
+  app.post("/api/sms", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { phoneNumber, message } = req.body;
+      
+      if (!phoneNumber || !message) {
+        return res.status(400).json({ message: "Phone number and message are required" });
+      }
+      
+      // Verify the user has credits
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (user.aiCredits <= 0) {
+        return res.status(402).json({ message: "Insufficient credits" });
+      }
+      
+      const result = await sendSms(phoneNumber, message);
+      
+      return res.json(result);
+    } catch (error: any) {
+      console.error("Error sending SMS:", error);
+      return res.status(500).json({ 
+        message: "Failed to send SMS",
+        error: error.message || "Unknown error"
+      });
     }
   });
 
