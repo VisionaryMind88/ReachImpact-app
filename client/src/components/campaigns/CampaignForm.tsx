@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Contact } from "@shared/schema";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -38,6 +40,9 @@ const campaignFormSchema = insertCampaignSchema
     industry: z.string().min(2, "Industry must be at least 2 characters"),
     description: z.string().optional(),
     script: z.string().optional(),
+    language: z.string().default("en"),
+    translationEnabled: z.boolean().default(false),
+    responseLanguage: z.string().optional(),
     selectedContactIds: z.array(z.number()).optional(),
   });
 
@@ -76,6 +81,9 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ campaignId, onSuccess }) =>
       status: "active",
       description: "",
       script: "",
+      language: "en",
+      translationEnabled: false,
+      responseLanguage: "",
       selectedContactIds: [],
     },
   });
@@ -89,6 +97,9 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ campaignId, onSuccess }) =>
         status: campaign.status,
         description: campaign.description || "",
         script: campaign.script || "",
+        language: campaign.language || "en",
+        translationEnabled: campaign.translationEnabled || false,
+        responseLanguage: campaign.responseLanguage || "",
         // We'd need to fetch related contacts here
       });
     }
@@ -304,6 +315,111 @@ const CampaignForm: React.FC<CampaignFormProps> = ({ campaignId, onSuccess }) =>
                 </FormItem>
               )}
             />
+
+            {/* Language settings */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Language Settings</h3>
+              
+              {/* Primary language */}
+              <FormField
+                control={form.control}
+                name="language"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Primary Conversation Language</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select language" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="en">English</SelectItem>
+                        <SelectItem value="es">Spanish</SelectItem>
+                        <SelectItem value="fr">French</SelectItem>
+                        <SelectItem value="de">German</SelectItem>
+                        <SelectItem value="zh">Chinese</SelectItem>
+                        <SelectItem value="ja">Japanese</SelectItem>
+                        <SelectItem value="ko">Korean</SelectItem>
+                        <SelectItem value="ar">Arabic</SelectItem>
+                        <SelectItem value="ru">Russian</SelectItem>
+                        <SelectItem value="pt">Portuguese</SelectItem>
+                        <SelectItem value="it">Italian</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {/* Translation toggle */}
+              <FormField
+                control={form.control}
+                name="translationEnabled"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Enable Automatic Translation</FormLabel>
+                      <FormDescription>
+                        When enabled, the AI will automatically translate user input to the primary language
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              {/* Response language - only show when translation is enabled */}
+              {form.watch("translationEnabled") && (
+                <FormField
+                  control={form.control}
+                  name="responseLanguage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Response Language</FormLabel>
+                      <FormDescription>
+                        The language the AI will use to respond to users
+                      </FormDescription>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Same as primary language" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="">Same as primary language</SelectItem>
+                          <SelectItem value="en">English</SelectItem>
+                          <SelectItem value="es">Spanish</SelectItem>
+                          <SelectItem value="fr">French</SelectItem>
+                          <SelectItem value="de">German</SelectItem>
+                          <SelectItem value="zh">Chinese</SelectItem>
+                          <SelectItem value="ja">Japanese</SelectItem>
+                          <SelectItem value="ko">Korean</SelectItem>
+                          <SelectItem value="ar">Arabic</SelectItem>
+                          <SelectItem value="ru">Russian</SelectItem>
+                          <SelectItem value="pt">Portuguese</SelectItem>
+                          <SelectItem value="it">Italian</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </div>
 
             {/* Contact selection will be added in a future enhancement */}
           </CardContent>
