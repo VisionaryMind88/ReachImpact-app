@@ -1,0 +1,95 @@
+You are a senior professional Fullstack Designer & Developer, using Next.js and React frontend components, combined with Firebase for Authentication, Database (Firestore), Storage and Analytics integrations. You also integrate Twilio Voice APIs for outbound calling fully automated via APIs, GPT-4 (OpenAI API) for conversational AI both in voice and chat capabilities and Stripe for payments and billing.
+
+You create a pixel-perfect responsive web application named "ReachImpact", entirely in English by default, with multilingual switching (English, German, Dutch, Spanish, French easily switchable within user dashboard).
+
+ReachImpact Functionalities you build (everything precise and high-quality):
+
+✅ Authentication & Registration system
+
+Professional Firebase Auth login/register form
+Customizable logo "ReachImpact"
+✅ User Profile-dashboard (after login): "AI-data collection screen"
+User provides mandatory:
+
+Full Name, Company Name, Email, Phone Number, Industry Branch
+Preferred language AI: English, German, French, Spanish, Dutch
+Company description field (crucial info how AI introduces itself)
+(all saved securely in Firestore, accessed by GPT-4 API)
+✅ Upload Excel/CSV Contacts (you use GPT-4 to parse data intelligently). Extract precisely:
+
+Name, Company, Email, Phone Number, Branch.
+All contacts & details visible clearly in UI.
+✅ Integrated AI-conversation Status Dashboard:
+Perfect UI Status Screen visible after calling contacts:
+
+Call status (answered, voicemail, declined, callback needed, success/fail)
+Appointment status (scheduled)
+Email follow-up status (sent/not sent), SMS sent status clearly displayed.
+✅ Automatic AI outbound Voice Calling (Twilio):
+
+Calls handled smartly with GPT-4, perfect dialogues in selected language.
+Real-time status indicators clearly shown
+Call duration displayed clearly as "AI-minutes & balance remaining"
+AI smartly attempts to make an appointment (fully automated based on info provided).
+✅ Automatic SMS & Email Follow-ups (Twilio SMS & Firebase Mail triggered automatically)
+
+✅ Chat Widget (Right bottom corner):
+Custom-made chatbot powered by GPT-4, answering instantly all user-questions, trained professionally with FAQ, documentation & onboarding materials of ReachImpact services.
+
+✅ Credit/Balance billing system (Stripe integration):
+
+Automatic billing per contact/call minute, e.g. 5-min per uploaded contact
+When running low on credits, users see intuitive warning & automatic redirection to online Stripe payment system.
+✅ Implementation Cloud Security (fully GDPR compliant),
+
+Firestore rules professionally secured, automatic backups (Firebase Storage) encrypted.
+✅ Pixel-perfect responsive design (React Components, Tailwind CSS/Material UI professionally used) fully customizable themes/colors/fonts easily changeable by end-users.
+
+✅ Professional implemented Analytics dashboard (Firebase Analytics built-in):
+Graphs clearly showing campaign success, calls made, converted appointments, languages used, average calls, data export (CSV/PDF export).
+
+✅ Professional User-Role management:
+Admin, Customer, Manager roles professionally built-in with different UI access & functions.
+
+✅ Campaign Management dashboard ("bulk campaign calling"):
+Intuitive bulk campaigns with KPI analytics (appointments %, calls duration, conversion rate analytics).
+
+✅ Real-time Call Monitoring dashboard UI professionally integrated
+(show running calls, real-time call progress & status, recordings accessible on-demand).
+
+✅ Intelligent AI Assistant Training Console:
+After every unsuccessful call: feedback form allowing users to train/improve AI quality progressively.
+
+✅ Calendar Integration: Google Calendar, Outlook automated integration (appointments booked by AI directly visible customer calendar effortlessly).
+
+✅ AI sentiment and conversation analytics integration:
+Professional AI-sentiment and voice analytics clearly visible (positive/negative/analyzed emotions dashboard).
+
+✅ Multi-channel integration (Email/SMS/WhatsApp automation integr.).
+AI automatically can send SMS and WhatsApp reminders, or email follow-ups professionally after every successful or unsuccessful call.
+
+✅ Predictive analytics dashboard clearly visible
+Clearly indicate suggested best days/times slots to call contacts, suggested words/scripts for optimal conversions.
+
+✅ User-friendly conversation script module:
+Allow users to set/upload clearly their own conversation templates and AI scripts/preferences clearly done UI.
+
+✅ FAQ integrations professionally implemented inside chatbot:
+AI chatbot knows profound and detailed answers/documentation/videos/tutorials onboarding, everything integrated flexible and professionally accessible in-app.
+
+✅ AI-call performance Rating module (live feedback):
+Star-rating & AI feedback immediately after each call easily accessible for quality-improvement.
+
+✅ Hosting infrastructure: Deploy on scalable cloud hosting (Firebase Hosting + Firebase Cloud Functions backend), reliability 99.9% uptime professionally handled for fast responsiveness.
+
+✅ Multi-language App navigation (English, German, Dutch, French and Spanish) UI/text easily switchable dynamically.
+
+Deliver everything pixel-perfect, fully-connected backend/frontend via clean APIs:
+
+React Next.js (frontend UI),
+Firebase Authentication, Firestore, Functions, Storage, Analytics (backend),
+Twilio for Voice, SMS intelligent integration,
+GPT-4 API (OpenAI) intelligent chat & phone conversation engine,
+Stripe API for billing/payments
+Google/Outlook calendar API automatic appointment integration.
+This professional, responsive web application named ReachImpact is finished working 100% connected, fully functioning, pixel-perfect, tested and production-ready instantly after running your delivered codebase in Replit or any given similar production environment.
