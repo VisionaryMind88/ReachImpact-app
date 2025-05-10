@@ -3,11 +3,30 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { sendChatMessage, ChatMessage } from "@/lib/openai";
-import { MessageSquare, Send, X, Bot } from "lucide-react";
+import { 
+  sendChatMessage, 
+  sendMultilingualChatMessage, 
+  ChatMessage, 
+  LanguagePreference
+} from "@/lib/openai";
+import { MessageSquare, Send, X, Bot, Globe, Settings } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const ChatWidget: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language: interfaceLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -17,6 +36,12 @@ const ChatWidget: React.FC = () => {
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [languageSettings, setLanguageSettings] = useState<LanguagePreference>({
+    conversationLanguage: interfaceLanguage || "en",
+    responseLanguage: interfaceLanguage || "en",
+    translateUserInput: false
+  });
+  const [showSettings, setShowSettings] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +61,19 @@ const ChatWidget: React.FC = () => {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
+  };
+
+  // Toggle language settings panel
+  const toggleSettings = () => {
+    setShowSettings(!showSettings);
+  };
+  
+  // Handle language setting changes
+  const handleLanguageChange = (key: keyof LanguagePreference, value: string | boolean) => {
+    setLanguageSettings(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -63,7 +101,19 @@ const ChatWidget: React.FC = () => {
         userMessage,
       ];
       
-      const response = await sendChatMessage(allMessages);
+      // Decide whether to use multilingual or regular chat
+      let response;
+      
+      // Use multilingual chat if any language settings differ from defaults
+      if (
+        languageSettings.conversationLanguage !== interfaceLanguage ||
+        languageSettings.responseLanguage !== languageSettings.conversationLanguage ||
+        languageSettings.translateUserInput
+      ) {
+        response = await sendMultilingualChatMessage(allMessages, languageSettings);
+      } else {
+        response = await sendChatMessage(allMessages);
+      }
       
       setMessages((prev) => [...prev, response.message]);
     } catch (error) {
@@ -99,14 +149,109 @@ const ChatWidget: React.FC = () => {
             <div className="bg-primary-600 px-4 py-3 text-white">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">{t("chat.assistant")}</h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleChat}
-                  className="text-white hover:text-white/90 h-8 w-8"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center space-x-1">
+                  <Popover open={showSettings} onOpenChange={setShowSettings}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggleSettings}
+                        className="text-white hover:text-white/90 h-8 w-8"
+                      >
+                        <Globe className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-4" align="end">
+                      <div className="space-y-4">
+                        <h4 className="font-medium text-sm">Language Settings</h4>
+                        
+                        {/* Conversation Language */}
+                        <div className="space-y-2">
+                          <Label htmlFor="conversationLanguage">Primary Conversation Language</Label>
+                          <Select 
+                            value={languageSettings.conversationLanguage}
+                            onValueChange={(value) => handleLanguageChange('conversationLanguage', value)}
+                          >
+                            <SelectTrigger id="conversationLanguage">
+                              <SelectValue placeholder="Select language" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="en">English</SelectItem>
+                              <SelectItem value="es">Spanish</SelectItem>
+                              <SelectItem value="fr">French</SelectItem>
+                              <SelectItem value="de">German</SelectItem>
+                              <SelectItem value="zh">Chinese</SelectItem>
+                              <SelectItem value="ja">Japanese</SelectItem>
+                              <SelectItem value="ko">Korean</SelectItem>
+                              <SelectItem value="ar">Arabic</SelectItem>
+                              <SelectItem value="ru">Russian</SelectItem>
+                              <SelectItem value="pt">Portuguese</SelectItem>
+                              <SelectItem value="it">Italian</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        {/* Translation Toggle */}
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <Label htmlFor="translateToggle">Auto-translate your messages</Label>
+                            <p className="text-xs text-gray-500">
+                              Automatically translate your messages to the primary language
+                            </p>
+                          </div>
+                          <Switch
+                            id="translateToggle"
+                            checked={languageSettings.translateUserInput}
+                            onCheckedChange={(checked) => handleLanguageChange('translateUserInput', checked)}
+                          />
+                        </div>
+                        
+                        {/* Response Language - only show when translation is enabled */}
+                        {languageSettings.translateUserInput && (
+                          <div className="space-y-2">
+                            <Label htmlFor="responseLanguage">Response Language</Label>
+                            <p className="text-xs text-gray-500">
+                              The language the AI will use to respond to you
+                            </p>
+                            <Select 
+                              value={languageSettings.responseLanguage}
+                              onValueChange={(value) => handleLanguageChange('responseLanguage', value)}
+                            >
+                              <SelectTrigger id="responseLanguage">
+                                <SelectValue placeholder="Same as conversation language" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value={languageSettings.conversationLanguage}>
+                                  Same as conversation language
+                                </SelectItem>
+                                <SelectItem value="en">English</SelectItem>
+                                <SelectItem value="es">Spanish</SelectItem>
+                                <SelectItem value="fr">French</SelectItem>
+                                <SelectItem value="de">German</SelectItem>
+                                <SelectItem value="zh">Chinese</SelectItem>
+                                <SelectItem value="ja">Japanese</SelectItem>
+                                <SelectItem value="ko">Korean</SelectItem>
+                                <SelectItem value="ar">Arabic</SelectItem>
+                                <SelectItem value="ru">Russian</SelectItem>
+                                <SelectItem value="pt">Portuguese</SelectItem>
+                                <SelectItem value="it">Italian</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleChat}
+                    className="text-white hover:text-white/90 h-8 w-8"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <p className="text-sm text-primary-100">{t("chat.howCanIHelp")}</p>
             </div>
