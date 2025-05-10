@@ -39,6 +39,8 @@ export const campaigns = pgTable("campaigns", {
   name: text("name").notNull(),
   industry: text("industry").notNull(),
   status: text("status").notNull().default("active"),
+  description: text("description"),
+  script: text("script"),
   totalContacts: integer("total_contacts").notNull().default(0),
   callsMade: integer("calls_made").notNull().default(0),
   appointmentsSet: integer("appointments_set").notNull().default(0),
