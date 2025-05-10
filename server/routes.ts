@@ -687,7 +687,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact parsing route
   app.post("/api/parse-contacts", async (req: Request, res: Response) => {
     try {
-      const { content, fileType } = req.body;
+      const { content, fileType, language = "en" } = req.body;
       
       if (!content || typeof content !== 'string') {
         return res.status(400).json({ message: "Invalid request: content must be a string" });
@@ -697,11 +697,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid request: fileType must be 'csv' or 'excel'" });
       }
       
-      // Create a prompt based on file type
+      // Create a prompt based on file type and language
       const systemPrompt = `You are an expert at parsing ${fileType === 'csv' ? 'CSV' : 'Excel'} data. 
       Extract contact information from the following content and convert it to a JSON array of objects.
       Each object should have these fields if available: fullName, email, phoneNumber, companyName, industry, notes.
-      Ensure phone numbers are properly formatted. Return only the JSON array.`;
+      Ensure phone numbers are properly formatted. Return only the JSON array.
+      The input data might be in ${language} language, please handle it appropriately.`;
       
       const response = await openai.chat.completions.create({
         model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
@@ -728,6 +729,225 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("OpenAI contact parsing error:", error);
       return res.status(500).json({ 
         message: "Error parsing contacts", 
+        error: error.message || "Unknown error" 
+      });
+    }
+  });
+  
+  // Multilingual chat route
+  app.post("/api/multilingual-chat", async (req: Request, res: Response) => {
+    try {
+      // Extract request parameters
+      const { 
+        messages, 
+        language_preference, 
+        model = "gpt-4o", 
+        temperature = 0.7, 
+        max_tokens = 500 
+      } = req.body;
+      
+      // Validate request
+      if (!messages || !Array.isArray(messages)) {
+        return res.status(400).json({ message: "Invalid request: messages must be an array" });
+      }
+      
+      if (!language_preference || !language_preference.conversationLanguage || !language_preference.responseLanguage) {
+        return res.status(400).json({ message: "Invalid request: language preference must be specified" });
+      }
+      
+      const { conversationLanguage, responseLanguage, translateUserInput } = language_preference;
+      
+      // Create a copy of messages for processing
+      let processedMessages = [...messages];
+      
+      // If translation is enabled, we need to translate user messages to the conversation language
+      if (translateUserInput) {
+        // Translate user messages to the conversation language
+        const translatedMessages = await Promise.all(
+          processedMessages.map(async (message) => {
+            if (message.role === "user") {
+              // Create a translation prompt
+              const translationCompletion = await openai.chat.completions.create({
+                model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+                messages: [
+                  {
+                    role: "system",
+                    content: `You are a translator. Translate the following text from any language to ${conversationLanguage}. Preserve the original meaning, tone, and intent as closely as possible. Only return the translated text, nothing else.`
+                  },
+                  {
+                    role: "user",
+                    content: message.content
+                  }
+                ]
+              });
+              
+              // Return translated message
+              return {
+                ...message,
+                original_content: message.content,
+                content: translationCompletion.choices[0].message.content || message.content
+              };
+            }
+            return message;
+          })
+        );
+        
+        processedMessages = translatedMessages;
+      }
+      
+      // If conversation language is different from response language, add system prompt to respond in response language
+      if (conversationLanguage !== responseLanguage) {
+        // Add or update system message to include language instruction
+        const hasSystemMessage = processedMessages.some(msg => msg.role === "system");
+        
+        if (hasSystemMessage) {
+          // Update existing system message
+          processedMessages = processedMessages.map(msg => {
+            if (msg.role === "system") {
+              return {
+                ...msg,
+                content: `${msg.content} Please respond in ${responseLanguage}.`
+              };
+            }
+            return msg;
+          });
+        } else {
+          // Add a new system message
+          processedMessages.unshift({
+            role: "system",
+            content: `Please respond in ${responseLanguage}.`
+          });
+        }
+      }
+      
+      // Make API call to OpenAI with processed messages
+      const completion = await openai.chat.completions.create({
+        model: model, // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+        messages: processedMessages,
+        temperature: temperature,
+        max_tokens: max_tokens,
+      });
+      
+      // Calculate token usage
+      const promptTokens = completion.usage?.prompt_tokens || 0;
+      const completionTokens = completion.usage?.completion_tokens || 0;
+      const totalTokens = completion.usage?.total_tokens || 0;
+      
+      // Return response
+      return res.json({
+        message: {
+          role: completion.choices[0].message.role,
+          content: completion.choices[0].message.content,
+        },
+        usage: {
+          promptTokens,
+          completionTokens,
+          totalTokens,
+        }
+      });
+    } catch (error: any) {
+      console.error("OpenAI multilingual chat error:", error);
+      return res.status(500).json({ 
+        message: "Error processing multilingual chat request", 
+        error: error.message || "Unknown error"
+      });
+    }
+  });
+  
+  // Translation route
+  app.post("/api/translate", async (req: Request, res: Response) => {
+    try {
+      const { text, source_language, target_language } = req.body;
+      
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ message: "Invalid request: text must be a string" });
+      }
+      
+      if (!target_language) {
+        return res.status(400).json({ message: "Invalid request: target language must be specified" });
+      }
+      
+      // Create a translation prompt based on source and target language
+      const prompt = source_language
+        ? `Translate the following text from ${source_language} to ${target_language}. Only return the translated text, nothing else.`
+        : `Translate the following text to ${target_language}. Detect the source language automatically. Only return the translated text, nothing else.`;
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+        messages: [
+          {
+            role: "system",
+            content: prompt
+          },
+          {
+            role: "user",
+            content: text
+          }
+        ]
+      });
+      
+      return res.json({
+        translatedText: response.choices[0].message.content,
+        detectedLanguage: source_language || "auto-detected"
+      });
+    } catch (error: any) {
+      console.error("OpenAI translation error:", error);
+      return res.status(500).json({ 
+        message: "Error translating text", 
+        error: error.message || "Unknown error" 
+      });
+    }
+  });
+  
+  // Script generation route
+  app.post("/api/generate-script", async (req: Request, res: Response) => {
+    try {
+      const { campaign_info, language = "en" } = req.body;
+      
+      if (!campaign_info || !campaign_info.name || !campaign_info.industry) {
+        return res.status(400).json({ message: "Invalid request: campaign information is required" });
+      }
+      
+      const { name, industry, description } = campaign_info;
+      
+      // Create a script generation prompt
+      const prompt = `Create a professional AI calling script for a campaign named "${name}" in the ${industry} industry.
+      ${description ? `Campaign description: ${description}` : ""}
+      
+      The script should include:
+      1. A friendly introduction that mentions the company name
+      2. A brief explanation of the reason for the call
+      3. Key questions to understand the contact's needs
+      4. Handling of common objections
+      5. A clear call-to-action or next steps
+      6. A polite conclusion
+
+      Make the script sound natural and conversational, not robotic.
+      The script must be in ${language} language.
+      
+      Format the script with clear sections and provide any special instructions for the AI assistant in brackets.`;
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert in creating effective sales and customer engagement scripts."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ]
+      });
+      
+      return res.json({
+        script: response.choices[0].message.content
+      });
+    } catch (error: any) {
+      console.error("OpenAI script generation error:", error);
+      return res.status(500).json({ 
+        message: "Error generating script", 
         error: error.message || "Unknown error" 
       });
     }
