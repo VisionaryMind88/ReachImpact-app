@@ -4,6 +4,14 @@ import { storage } from "./storage";
 import { insertUserSchema, insertContactSchema, insertCampaignSchema, insertCallSchema } from "@shared/schema";
 import { z } from "zod";
 import OpenAI from "openai";
+import session from "express-session";
+
+// Extend Express Request to include session
+declare module "express" {
+  interface Request {
+    session: session.SessionData;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
@@ -67,13 +75,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/auth/logout", (req: Request, res: Response) => {
-    req.session.destroy(err => {
-      if (err) {
-        return res.status(500).json({ message: "Failed to logout" });
-      }
+    if (req.session) {
+      // Clear user ID from session
+      req.session.userId = undefined;
+      
+      // Regenerate session
+      req.session.save((err: any) => {
+        if (err) {
+          return res.status(500).json({ message: "Failed to logout" });
+        }
+        res.clearCookie("connect.sid");
+        return res.json({ message: "Successfully logged out" });
+      });
+    } else {
       res.clearCookie("connect.sid");
       return res.json({ message: "Successfully logged out" });
-    });
+    }
   });
 
   // User profile routes
@@ -377,11 +394,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalTokens,
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("OpenAI chat error:", error);
       return res.status(500).json({ 
         message: "Error processing chat request", 
-        error: error.message 
+        error: error.message || "Unknown error" 
       });
     }
   });
@@ -416,11 +433,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         rating: Math.max(1, Math.min(5, Math.round(result.rating || 3))),
         confidence: Math.max(0, Math.min(1, result.confidence || 0.5))
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("OpenAI sentiment analysis error:", error);
       return res.status(500).json({ 
         message: "Error analyzing sentiment", 
-        error: error.message 
+        error: error.message || "Unknown error" 
       });
     }
   });
@@ -465,11 +482,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
                       Array.isArray(jsonResponse) ? jsonResponse : [];
       
       return res.json(contacts);
-    } catch (error) {
+    } catch (error: any) {
       console.error("OpenAI contact parsing error:", error);
       return res.status(500).json({ 
         message: "Error parsing contacts", 
-        error: error.message 
+        error: error.message || "Unknown error" 
       });
     }
   });
