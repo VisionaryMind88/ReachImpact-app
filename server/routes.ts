@@ -1,0 +1,479 @@
+import type { Express, Request, Response, NextFunction } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { insertUserSchema, insertContactSchema, insertCampaignSchema, insertCallSchema } from "@shared/schema";
+import { z } from "zod";
+import OpenAI from "openai";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth routes
+  app.post("/api/auth/register", async (req: Request, res: Response) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      const existingUser = await storage.getUserByEmail(userData.email);
+      
+      if (existingUser) {
+        return res.status(400).json({ message: "User with this email already exists" });
+      }
+      
+      const user = await storage.createUser(userData);
+      // Don't return password in response
+      const { password, ...userWithoutPassword } = userData;
+      
+      return res.status(201).json(userWithoutPassword);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid user data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to create user" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+      
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      // In a real app, we would compare hashed passwords
+      // For this demo, we'll just compare plaintext (not secure)
+      if (password !== (req.body.password as string)) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      // Create session (simplified for demo)
+      req.session.userId = user.id;
+      
+      return res.json({ 
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        companyName: user.companyName,
+        preferredLanguage: user.preferredLanguage,
+        aiCredits: user.aiCredits,
+        role: user.role
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", (req: Request, res: Response) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ message: "Failed to logout" });
+      }
+      res.clearCookie("connect.sid");
+      return res.json({ message: "Successfully logged out" });
+    });
+  });
+
+  // User profile routes
+  app.get("/api/user/profile", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = await storage.getUser(req.session.userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't expose password in response
+      const { password, ...userWithoutPassword } = user as any;
+      
+      return res.json(userWithoutPassword);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get user profile" });
+    }
+  });
+
+  app.put("/api/user/profile", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const updateSchema = insertUserSchema.partial().omit({ password: true });
+      const userData = updateSchema.parse(req.body);
+      
+      const updatedUser = await storage.updateUser(req.session.userId, userData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't expose password in response
+      const { password, ...userWithoutPassword } = updatedUser as any;
+      
+      return res.json(userWithoutPassword);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid user data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
+  // Contact routes
+  app.get("/api/contacts", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const contacts = await storage.getContactsByUserId(req.session.userId);
+      return res.json(contacts);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get contacts" });
+    }
+  });
+
+  app.post("/api/contacts", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const contactData = insertContactSchema.parse(req.body);
+      const contact = await storage.createContact({
+        ...contactData,
+        userId: req.session.userId
+      });
+      
+      return res.status(201).json(contact);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid contact data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to create contact" });
+    }
+  });
+
+  app.post("/api/contacts/bulk", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const contactsArray = z.array(insertContactSchema).parse(req.body);
+      
+      const contacts = await storage.createManyContacts(
+        contactsArray.map(contact => ({
+          ...contact,
+          userId: req.session.userId as number
+        }))
+      );
+      
+      return res.status(201).json(contacts);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid contacts data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to create contacts" });
+    }
+  });
+
+  app.get("/api/contacts/:id", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const contactId = parseInt(req.params.id);
+      const contact = await storage.getContact(contactId);
+      
+      if (!contact) {
+        return res.status(404).json({ message: "Contact not found" });
+      }
+      
+      if (contact.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      
+      return res.json(contact);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get contact" });
+    }
+  });
+
+  // Campaign routes
+  app.get("/api/campaigns", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const campaigns = await storage.getCampaignsByUserId(req.session.userId);
+      return res.json(campaigns);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get campaigns" });
+    }
+  });
+
+  app.post("/api/campaigns", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const campaignData = insertCampaignSchema.parse(req.body);
+      const campaign = await storage.createCampaign({
+        ...campaignData,
+        userId: req.session.userId
+      });
+      
+      return res.status(201).json(campaign);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid campaign data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to create campaign" });
+    }
+  });
+
+  // Call routes
+  app.get("/api/calls", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const calls = await storage.getCallsByUserId(req.session.userId);
+      return res.json(calls);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get calls" });
+    }
+  });
+
+  app.post("/api/calls", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const callData = insertCallSchema.parse(req.body);
+      
+      // Verify the contact belongs to this user
+      const contact = await storage.getContact(callData.contactId);
+      if (!contact || contact.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Unauthorized access to contact" });
+      }
+      
+      const call = await storage.createCall({
+        ...callData,
+        userId: req.session.userId
+      });
+      
+      return res.status(201).json(call);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid call data", errors: error.errors });
+      }
+      return res.status(500).json({ message: "Failed to create call" });
+    }
+  });
+
+  // Credits/billing
+  app.get("/api/credits", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const user = await storage.getUser(req.session.userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      return res.json({ credits: user.aiCredits });
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get credits" });
+    }
+  });
+
+  app.post("/api/credits/add", async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const { amount } = req.body;
+      
+      if (!amount || typeof amount !== 'number' || amount <= 0) {
+        return res.status(400).json({ message: "Invalid amount" });
+      }
+      
+      const user = await storage.getUser(req.session.userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const updatedUser = await storage.updateUser(req.session.userId, {
+        aiCredits: user.aiCredits + amount
+      });
+      
+      if (!updatedUser) {
+        return res.status(500).json({ message: "Failed to add credits" });
+      }
+      
+      return res.json({ credits: updatedUser.aiCredits });
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to add credits" });
+    }
+  });
+
+  // OpenAI API routes
+  // Initialize OpenAI client
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  // Chat route
+  app.post("/api/chat", async (req: Request, res: Response) => {
+    try {
+      // Extract request parameters
+      const { messages, model = "gpt-4o", temperature = 0.7, max_tokens = 500 } = req.body;
+      
+      // Validate request
+      if (!messages || !Array.isArray(messages)) {
+        return res.status(400).json({ message: "Invalid request: messages must be an array" });
+      }
+      
+      // Make API call to OpenAI
+      const completion = await openai.chat.completions.create({
+        model: model, // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: messages,
+        temperature: temperature,
+        max_tokens: max_tokens,
+      });
+      
+      // Calculate token usage
+      const promptTokens = completion.usage?.prompt_tokens || 0;
+      const completionTokens = completion.usage?.completion_tokens || 0;
+      const totalTokens = completion.usage?.total_tokens || 0;
+      
+      // Return response
+      return res.json({
+        message: {
+          role: completion.choices[0].message.role,
+          content: completion.choices[0].message.content,
+        },
+        usage: {
+          promptTokens,
+          completionTokens,
+          totalTokens,
+        }
+      });
+    } catch (error) {
+      console.error("OpenAI chat error:", error);
+      return res.status(500).json({ 
+        message: "Error processing chat request", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Sentiment analysis route
+  app.post("/api/analyze-sentiment", async (req: Request, res: Response) => {
+    try {
+      const { text } = req.body;
+      
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ message: "Invalid request: text must be a string" });
+      }
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+        messages: [
+          {
+            role: "system",
+            content: "You are a sentiment analysis expert. Analyze the sentiment of the text and provide a rating from 1 to 5 stars and a confidence score between 0 and 1. Respond with JSON in this format: { 'rating': number, 'confidence': number }"
+          },
+          {
+            role: "user",
+            content: text
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+      
+      const result = JSON.parse(response.choices[0].message.content || "{}");
+      
+      return res.json({
+        rating: Math.max(1, Math.min(5, Math.round(result.rating || 3))),
+        confidence: Math.max(0, Math.min(1, result.confidence || 0.5))
+      });
+    } catch (error) {
+      console.error("OpenAI sentiment analysis error:", error);
+      return res.status(500).json({ 
+        message: "Error analyzing sentiment", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Contact parsing route
+  app.post("/api/parse-contacts", async (req: Request, res: Response) => {
+    try {
+      const { content, fileType } = req.body;
+      
+      if (!content || typeof content !== 'string') {
+        return res.status(400).json({ message: "Invalid request: content must be a string" });
+      }
+      
+      if (!fileType || (fileType !== 'csv' && fileType !== 'excel')) {
+        return res.status(400).json({ message: "Invalid request: fileType must be 'csv' or 'excel'" });
+      }
+      
+      // Create a prompt based on file type
+      const systemPrompt = `You are an expert at parsing ${fileType === 'csv' ? 'CSV' : 'Excel'} data. 
+      Extract contact information from the following content and convert it to a JSON array of objects.
+      Each object should have these fields if available: fullName, email, phoneNumber, companyName, industry, notes.
+      Ensure phone numbers are properly formatted. Return only the JSON array.`;
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
+          },
+          {
+            role: "user",
+            content: content
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+      
+      // Parse the response
+      const jsonResponse = JSON.parse(response.choices[0].message.content || "{}");
+      const contacts = Array.isArray(jsonResponse.contacts) ? jsonResponse.contacts : 
+                      Array.isArray(jsonResponse) ? jsonResponse : [];
+      
+      return res.json(contacts);
+    } catch (error) {
+      console.error("OpenAI contact parsing error:", error);
+      return res.status(500).json({ 
+        message: "Error parsing contacts", 
+        error: error.message 
+      });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
