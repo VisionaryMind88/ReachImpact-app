@@ -1,0 +1,74 @@
+You are an experienced React.js (Next.js) web-developer and UI/UX-designer specialized in creating pixel-perfect professional dashboard demos.
+
+Create now perfectly the "ReachImpact Demo Dashboard"—a fully responsive, professionally designed interactive demonstration environment for the SaaS product called "ReachImpact" (an AI-driven automatic marketing call platform).
+
+This Demo Dashboard will let potential customers experience clearly the app functionalities without real Twilio calls (zero cost) by using interactive simulated calls and professional explanatory video-tours.
+
+✅ STRUCTURE PERFECTLY AS FOLLOWS:
+
+🚀 Intro Welcome Screen super attractive & clear:
+Big welcome header "Welcome to the ReachImpact Demo!"
+Short explanatory sub-header clearly motivating visitors why ReachImpact radically improves their marketing calls, conversions & sales.
+Professional embedded "Guided Tour video" placeholder (Brief clear video placeholder professionally explaining the interface functionality, professionally implemented).
+Clear CTA button "Start Interactive Demo".
+🎛️ Professional Interactive Demo Dashboard clearly opens upon clicking CTA:
+Professionally designed UI clearly matches the ReachImpact visual brand (modern tech SaaS style with clean colors, fonts, appealing charts clearly included professionally).
+Intuitive easy-to-navigate menus & functionality clearly included ready for professional demonstration.
+💡 Dashboard Functionalities clearly professionally simulated:
+
+Clearly Simulated Interactive customer database (fake example-contacts professionally generated clearly realistic)
+• Name, Company, Phone number, Email, Industry clearly shown professionally realistic but explicitly labeled "(Example Data Only)" clearly.
+• Professional clearly pre-uploaded downloaded "demo-contact-list.xlsx" file clearly clickable to demonstrate upload functionality working professionally smooth.
+Professional clickable buttons clearly labeled "Simulate AI Call now" next to clearly visible contact rows.
+• On click, clearly professional Call Simulation panel appears clearly animated realistically.
+📞 Call Simulation professional UI clearly shown interactive simulated calling screen:
+
+Professionally animated call-progress visuals clearly moving (realistic phone-call ringing clearly professionally animated and represented).
+Pre-recorded clear audio conversation professionally plays demonstrating realistically various call-scenarios interactively selectable by user:
+Scenarios professionally selectable clearly interactive labeled:
+(a) "Successful Call: Appointment Scheduled",
+(b) "Call – Voicemail",
+(c) "Call – No answer",
+(d) "Call – Follow-up Scheduled clearly via SMS/Email"
+(User clicks scenario, realistic professionally recorded clearly AI-voice sample professionally demoing conversation plays clearly with interactive visual feedback professionally animated dashboard.)
+After call simulation completes, dashboard auto-updates status professional dynamically for user-experience clearly showing:
+• Status (Successful/Voicemail/No answer clearly),
+• Appointments made visually clear,
+• Follow-up email/SMS status sent simulation clearly.
+📅 Professional Interactive example Dashboards for Analytics & KPI performance clearly shown interactively with professional realistic data indicated explicitly as "Sample Results clearly shown":
+
+Calls made/hour,
+Appointments booked,
+Conversion rates,
+Average call duration,
+Response graphs clearly visually appealing,
+Interactive professional filters clearly shown (date & industry filters interactively easy clickable sample data only).
+🎥 Professional video section professionally implemented:
+Professionally embedded explanatory videos placeholders clearly presented and professionally labeled across dashboard pages clearly demoing extra features/functionality of ReachImpact clearly understandable.
+💬 Professionally implemented GPT-4 Chatbot (Interactive):
+Realistic GPT AI Chatbot clearly integrated bottom-right professionally clearly responds immediately clearly demoing FAQs & answering clearly any product questions professionally trained via example data only, clearly guiding demo-user.
+📈 CTA & Conversion to Real Customer clearly implemented professionally at end of simulation:
+Professional attractive screen clearly appears after interactive demo completes clearly saying explicitly:
+"Enjoyed the Demo? Get started now!"
+Clearly professionally implemented action buttons clearly labeled CTA to
+• "Subscribe & Purchase Call Minutes" professional Stripe/payment setup clearly integrated.
+• "Schedule a Live Demo/Sales Call", professionally integrated easy-calendar appointment scheduling integration (Calendly, Google / Outlook clearly professionally integrated instantly).
+💻 Technical requirements clearly implemented ready clearly:
+
+Pixel-perfect responsive Design (Next.js, React/Tailwind CSS/Material UI style clearly professional recommended),
+Hosting/deployment professionally ready with Vercel or Firebase Hosting, clearly production-ready clearly GitHub deployable project structure professionally setup integrated instantly deployable easily.
+🔒 Security & GDPR-compliant professionally ready clearly implemented explicitly including professional privacy policy placeholder clearly included automated ready.
+
+🌐 Multilingual clearly supported (English as default, Deutsch, Dutch, Spanish, French language-switcher clearly integrated professionally automated AI-generated translations clearly accurate via GPT professionally included).
+
+📵 Zero Twilio integration costs clearly professionally implemented, calls clearly only simulated interactively only.
+
+🚨 Clearly indicate visually throughout the demo dashboard professionally that all data, scenarios, calls, contacts shown are fictitious examples ("Demo Example Data clearly clearly label everywhere clearly professional").
+
+🎖Extra Professional Suggestion Implementations clearly included professionally:
+
+Professional storytelling/animated user-flow clearly showing how ReachImpact sales-calls professional impact company workflow clearly visualized professionally.
+Easy sharable animated customer success stories professional implementation,
+Professionally implemented guiding tour clearly explaining all features clearly interactively included friendly step-by-step clearly labeled professional walkthrough button "Take guided tour!"
+Real-time professional simulated dashboard statistics clearly professionally visually appealing implemented (interactive charts clearly labeling "example data clearly clearly everywhere clearly understandable").
+Deliver this professional demo dashboard immediately fully-functional, interactively clearly, professionally engaging, visually outstanding, ready-to-deploy immediately to demonstrate perfectly and sell ReachImpact to customers without actual usage Twilio API minutes perfectly.

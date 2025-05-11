@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -45,6 +46,33 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/settings" component={Settings} />
       <Route path="/billing" component={Billing} />
+      
+      {/* Demo routes */}
+      <Route path="/demo">
+        {() => (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+            <React.Fragment>
+              {(() => {
+                const Demo = React.lazy(() => import("@/pages/demo"));
+                return <Demo />;
+              })()}
+            </React.Fragment>
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/demo/dashboard">
+        {() => (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+            <React.Fragment>
+              {(() => {
+                const DemoDashboard = React.lazy(() => import("@/pages/demo/dashboard"));
+                return <DemoDashboard />;
+              })()}
+            </React.Fragment>
+          </Suspense>
+        )}
+      </Route>
+      
       <Route component={NotFound} />
     </Switch>
   );
