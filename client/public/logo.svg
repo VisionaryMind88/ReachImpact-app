@@ -1,0 +1,23 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base circle with gradient -->
+  <circle cx="60" cy="60" r="60" fill="url(#paint0_linear)"/>
+  
+  <!-- Phone icon (representing outbound calling) -->
+  <path d="M75.8 87.5c-9.4 0-18.5-3.7-25.3-10.5c-13.9-13.9-13.9-36.7 0-50.6c1.2-1.2 3-1.2 4.2 0c1.2 1.2 1.2 3 0 4.2c-11.6 11.6-11.6 30.5 0 42.1c5.6 5.6 13.1 8.7 21 8.7c7.9 0 15.4-3.1 21-8.7c11.6-11.6 11.6-30.5 0-42.1c-1.2-1.2-1.2-3 0-4.2c1.2-1.2 3-1.2 4.2 0c13.9 13.9 13.9 36.7 0 50.6C94.3 83.8 85.2 87.5 75.8 87.5z" fill="white"/>
+  
+  <!-- Speech bubble (representing AI-powered communication) -->
+  <path d="M44.2 87.5c-1.6 0-3-1.3-3-3V70.3H41c-9.9 0-18-8.1-18-18v-18c0-9.9 8.1-18 18-18h40c9.9 0 18 8.1 18 18v18c0 9.9-8.1 18-18 18H64.8L48.2 85.9C47.1 86.9 45.7 87.5 44.2 87.5zM41 22.3c-6.6 0-12 5.4-12 12v18c0 6.6 5.4 12 12 12h6.2c1.6 0 3 1.3 3 3v9.9l12.8-11.2c0.5-0.5 1.2-0.7 1.9-0.7H81c6.6 0 12-5.4 12-12v-18c0-6.6-5.4-12-12-12H41z" fill="white"/>
+  
+  <!-- Circles representing connections -->
+  <circle cx="50" cy="45" r="5" fill="white"/>
+  <circle cx="65" cy="45" r="5" fill="white"/>
+  <circle cx="80" cy="45" r="5" fill="white"/>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+</svg>

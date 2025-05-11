@@ -31,9 +31,19 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="h-12 w-12 bg-primary-500 rounded-md flex items-center justify-center text-white font-bold">
-            RI
-          </div>
+          <img 
+            src="/logo.svg"
+            alt="ReachImpact Logo" 
+            className="h-24 w-24"
+            onError={(e) => {
+              // Fallback if the logo image fails to load
+              e.currentTarget.style.display = 'none';
+              const fallback = document.createElement('div');
+              fallback.className = "h-12 w-12 bg-primary-500 rounded-md flex items-center justify-center text-white font-bold";
+              fallback.innerText = "RI";
+              e.currentTarget.parentNode?.appendChild(fallback);
+            }}
+          />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           {t("auth.login")}
