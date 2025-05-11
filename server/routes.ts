@@ -5,7 +5,12 @@ import { insertUserSchema, insertContactSchema, insertCampaignSchema, insertCall
 import { z } from "zod";
 import OpenAI from "openai";
 import session from "express-session";
+import multer from "multer";
+import fs from "fs";
+import path from "path";
+import os from "os";
 import { makeOutboundCall, getCallStatus as getTwilioCallStatus, endCall as endTwilioCall, sendSms } from "./twilio";
+import { transcribeAudio } from "./openai";
 
 // Extend Express Request to include session
 declare module "express" {
@@ -950,6 +955,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Error generating script", 
         error: error.message || "Unknown error" 
       });
+    }
+  });
+  
+  // File upload middleware for audio files
+  const multerStorage = multer.memoryStorage();
+  const upload = multer({ 
+    storage: multerStorage,
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB file size limit
+  });
+  
+  // Audio transcription endpoint
+  app.post("/api/transcribe", upload.single('audio'), async (req: Request, res: Response) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      if (!req.file) {
+        return res.status(400).json({ error: "No audio file provided" });
+      }
+      
+      const audioBuffer = req.file.buffer;
+      
+      // Use OpenAI's Whisper model for transcription
+      const { transcribeAudio } = require('./openai');
+      
+      // Create a temporary file
+      const fs = require('fs');
+      const path = require('path');
+      const os = require('os');
+      
+      const tempFile = path.join(os.tmpdir(), `recording-${Date.now()}.webm`);
+      fs.writeFileSync(tempFile, audioBuffer);
+      
+      try {
+        // Transcribe the audio
+        const transcription = await transcribeAudio(tempFile);
+        
+        // Clean up temporary file
+        fs.unlinkSync(tempFile);
+        
+        // Deduct credits (in a real app)
+        const user = await storage.getUser(req.session.userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        
+        if (user.aiCredits <= 0) {
+          return res.status(402).json({ message: "Insufficient credits" });
+        }
+        
+        res.json({ text: transcription.text });
+      } catch (transcriptionError) {
+        console.error("Transcription error:", transcriptionError);
+        
+        // Clean up temporary file even if there's an error
+        if (fs.existsSync(tempFile)) {
+          fs.unlinkSync(tempFile);
+        }
+        
+        res.status(500).json({ error: "Failed to transcribe audio" });
+      }
+    } catch (error) {
+      console.error("Error processing audio:", error);
+      res.status(500).json({ error: "Failed to process audio file" });
     }
   });
 
