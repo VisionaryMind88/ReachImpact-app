@@ -1,0 +1,17 @@
+{
+  "name": "my-fly-app",
+  "version": "1.0.0",
+  "description": "A simple Fastify app for Fly.io deployment",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "fastify": "^4.24.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
