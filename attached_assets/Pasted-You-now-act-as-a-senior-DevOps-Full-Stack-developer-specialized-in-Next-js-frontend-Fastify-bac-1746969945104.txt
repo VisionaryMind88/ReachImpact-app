@@ -1,0 +1,52 @@
+You now act as a senior DevOps / Full-Stack developer specialized in Next.js (frontend), Fastify backend, PostgreSQL database, advanced API-integration (Twilio Voice, OpenAI GPT-4), and Fly.io cloud hosting deployments.
+
+TASK SUMMARY (Professional requirements clearly):
+
+Clearly double-check and professionally improve all existing codebase (frontend & backend); test thoroughly and ensure 100% functionality clearly works without errors. Fix immediately any frontend/backend possible existing issues clearly.
+Convert clearly and professionally ENTIRE backend STRUCTURE clearly FROM SCRATCH: Move clearly away from Firebase backend clearly TO professionally set up FASTIFY RESTful endpoints/API on Fly.io platform professionally deployed (fully functional endpoints ready).
+Professionally migrate all existing data and logic clearly from Firebase authentications/database/storage entirely to PostgreSQL (setup clearly integrated on Fly.io).
+Configure professional Authentication/Authorization clearly implementation via JWT (JSON Web Tokens) within Fastify (no longer use Firebase Auth). Fully secure professionally set implementation done clearly production-ready.
+API INTEGRATIONS (Clearly professionally secure production-keys implementation, ensure perfectly working):
+
+✅ OPENAI GPT-4 API integration: professionally check & clearly confirm fully working perfectly.
+✅ Twilio API integration professionally check & securely ensure completely valid, fully functional outbound calls & SMS perfectly production-ready.
+
+CLEAR DATABASE MIGRATION (Firebase → PostgreSQL on Fly.io):
+✅ Create clearly PostgreSQL schema professionally matching the former Firebase data clearly
+✅ Fully automatic migration-scripts professionally created and clearly ready
+✅ Test clearly carefully after migration, ensure entire data clearly successfully moved professionally without error, data-loss or integrity clearly compromised anywhere clearly.
+
+DOMAIN & SSL (reachimpact.io):
+✅ Professionally setup clearly new routing at: reachimpact.io/app (professionally configured clean sub-path clearly).
+✅ Provide clearly exact simple step-by-step instructions (or clearly implement directly if authorized) clearly DNS-configurations quickly (Hostinger domain to clearly Fly.io), professionally secure SSL-certificate (Let's Encrypt HTTPS) setup clearly.
+
+ASSET & FILE UPLOADS STORAGE:
+✅ Professionally configure all file uploads (logos, customer files & images clearly uploads) securely clearly onto Fly.io durable storage/bucket integrated clearly perfectly seamlessly working.
+
+GITHUB TO FLY.IO AUTOMATIC CI/CD DEPLOYMENTS:
+✅ Setup clearly professionally GitHub integrated automatic deployment pipeline (clearly via GitHub Actions easily deploy directly to Fly.io fully professionally automated clearly).
+
+FRONT-END/UI REQUIREMENTS: (highly professional clearly)
+✅ Built using your existing Next.js frontend, clearly integrated professionally flawlessly Fastify backend API (fully connection functional checked).
+✅ Integrate clearly final LOGO provided by me (clearly fully transparently, perfectly resolution pro integrated clearly login-screen and header clearly perfectly UI consistent).
+
+Clearly check especially thoroughly currently non-working or problematic areas carefully:
+
+Calendar integrated professionally (Google & Outlook sync appointments clearly perfectly)
+Real-time Chat/Messages backend functionality clear real-time via Fastify/PostgreSQL
+Buy AI-credits area professionally UI clear attractive color implemented perfect appearance
+Ensure fully-functioning interactive demo environment professionally simulated without costs
+Advanced Firebase Analytics migrated & replaced professionally compatible alternative (e.g. Plausible or custom PostgreSQL analytics implementation)
+Voice-to-text campaign notes backend functionality professionally functional clearly transcription working smooth
+Real-time collaboration chat bubble clearly working
+Personalized Widget recommendations dashboard professionally integrated flawless clearly based usage analytics
+Interactive onboarding clearly tooltip animated clearly professional implemented
+Ensure flawless advanced analytics dashboard data visuals clearly from PostgreSQL (previously Firebase Analytics)
+Ensure entire Fastify-API backend structure clearly great scalability clearly maintainability professionally documented well.
+QUESTIONS/UNCERTAINTIES:
+Clearly if you're missing any specific access information (API keys, DNS records, GitHub details, Fly.io auth keys/tokens), ASK ME EXPLICITLY clearly directly detailed precisely what access/keys you exactly require.
+
+CLEAR DELIVERABLE FINAL RESULT (required professionally):
+✅ Final professionally converted ReachImpact app fully functional, bug-free, pixel-perfect tested clearly FULLY READY production-used deployed FASTIFY backend, PostgreSQL data on FLY.IO (HTTPS secured reachimpact.io/app), automatic GitHub CI/CD deployments, fully secure and functioning Twilio + OpenAI integration deployment completely achieved professionally — NO remaining errors, 100% working smoothly immediately user-friendly.
+
+Provide CLEAR insightful professional deployment-documentation & clear instructions summary finally deliver clearly project GitHub repository README.md clearly.
