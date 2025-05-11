@@ -1,0 +1,44 @@
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches:
+      - main  # Set this to your default branch
+
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Set up Fly CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          
+      - name: Notify success
+        if: success()
+        run: |
+          echo "ReachImpact successfully deployed to Fly.io!"
+          echo "Visit https://reachimpact.io to see the live site."
+
+      - name: Notify failure
+        if: failure()
+        run: echo "Deployment failed. Check logs for more information."
