@@ -2,7 +2,7 @@ FROM node:20-slim AS base
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=5000
 
 # Create application directory
 WORKDIR /app

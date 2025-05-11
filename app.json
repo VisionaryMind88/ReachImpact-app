@@ -1,0 +1,23 @@
+{
+  "name": "ReachImpact",
+  "description": "AI-powered outbound calling platform",
+  "repository": "https://github.com/yourusername/reachimpact",
+  "logo": "https://reachimpact-floral-glade-2185.fly.dev/logo.png",
+  "keywords": ["node", "express", "react", "openai", "twilio"],
+  "env": {
+    "SESSION_SECRET": {
+      "description": "A secret key for session encryption",
+      "generator": "secret"
+    },
+    "NODE_ENV": {
+      "description": "Environment for the application",
+      "value": "production"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "success_url": "/"
+}
