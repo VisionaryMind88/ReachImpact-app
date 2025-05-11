@@ -82,9 +82,20 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
     <aside className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col w-64 border-r border-gray-200 bg-white">
         <div className="flex items-center h-16 flex-shrink-0 px-4 border-b border-gray-200">
-          <div className="h-8 w-8 bg-primary-500 rounded-md flex items-center justify-center text-white font-bold">
-            RI
-          </div>
+          <img
+            src="/images/reachimpact-logo-new.png"
+            alt="ReachImpact Logo"
+            className="h-8 w-auto"
+            style={{ maxWidth: '140px' }}
+            onError={(e) => {
+              // Fallback if the logo image fails to load
+              e.currentTarget.style.display = 'none';
+              const fallback = document.createElement('div');
+              fallback.className = "h-8 w-8 bg-primary-500 rounded-md flex items-center justify-center text-white font-bold";
+              fallback.innerText = "RI";
+              e.currentTarget.parentNode?.appendChild(fallback);
+            }}
+          />
           <span className="ml-2 text-xl font-semibold text-gray-900">ReachImpact</span>
         </div>
         

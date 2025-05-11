@@ -32,9 +32,10 @@ const Register: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <img 
-            src="/logo.svg"
+            src="/images/reachimpact-logo-new.png"
             alt="ReachImpact Logo" 
-            className="h-24 w-24"
+            className="h-24 w-auto"
+            style={{ maxWidth: '380px' }}
             onError={(e) => {
               // Fallback if the logo image fails to load
               e.currentTarget.style.display = 'none';
