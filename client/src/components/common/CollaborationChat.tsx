@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
 import { 
@@ -47,6 +48,7 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -75,8 +77,8 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
     }, (error) => {
       console.error("Error fetching messages:", error);
       toast({
-        title: "Error loading messages",
-        description: "Please try again later",
+        title: t("chat.errorLoadingTitle", "Error loading messages"),
+        description: t("chat.errorLoadingDesc", "Please try again later"),
         variant: "destructive"
       });
       setLoading(false);
@@ -120,8 +122,8 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
-        title: "Failed to send message",
-        description: "Please try again",
+        title: t("chat.sendFailedTitle", "Failed to send message"),
+        description: t("chat.sendFailedDesc", "Please try again"),
         variant: "destructive"
       });
     }
@@ -145,7 +147,7 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
   return (
     <Card className="fixed bottom-6 right-6 w-80 shadow-lg z-50 overflow-hidden">
       <CardHeader className="bg-primary text-primary-foreground py-2 px-4 flex flex-row justify-between items-center">
-        <CardTitle className="text-sm font-medium">Team Chat</CardTitle>
+        <CardTitle className="text-sm font-medium">{t("chat.title", "Team Chat")}</CardTitle>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -154,7 +156,7 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Close chat</p>
+              <p>{t("chat.closeChat", "Close chat")}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

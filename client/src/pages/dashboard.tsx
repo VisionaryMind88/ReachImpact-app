@@ -9,8 +9,9 @@ import CampaignTable from "@/components/dashboard/CampaignTable";
 import CallList from "@/components/dashboard/CallList";
 import ContactList from "@/components/dashboard/ContactList";
 import OnboardingTour from "@/components/common/OnboardingTour";
+import CollaborationChat from "@/components/common/CollaborationChat";
 import { Button } from "@/components/ui/button";
-import { Phone, Upload, RefreshCcw, BarChart3, Calendar, MessageSquare, Clock, HelpCircle } from "lucide-react";
+import { Phone, Upload, RefreshCcw, BarChart3, Calendar, MessageSquare, Clock, HelpCircle, MessageCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 
@@ -20,6 +21,7 @@ const Dashboard: React.FC = () => {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   
   // Check if this is the user's first visit
   useEffect(() => {
@@ -113,13 +115,22 @@ const Dashboard: React.FC = () => {
     setShowOnboarding(true);
   };
 
-  // Enhanced dashboard actions with guided tour button
+  // Function to toggle the team chat
+  const handleToggleChat = () => {
+    setShowChat(!showChat);
+  };
+
+  // Enhanced dashboard actions with guided tour button and team chat button
   const enhancedDashboardActions = (
     <>
       {dashboardActions}
       <Button variant="outline" onClick={handleOpenTour}>
         <HelpCircle className="h-4 w-4 mr-2" />
         {t("dashboard.guidedTour")}
+      </Button>
+      <Button variant="outline" onClick={handleToggleChat}>
+        <MessageCircle className="h-4 w-4 mr-2" />
+        {t("common.teamChat", "Team Chat")}
       </Button>
     </>
   );
@@ -247,6 +258,13 @@ const Dashboard: React.FC = () => {
           // Optionally redirect to profile page to encourage completion
           setLocation("/profile");
         }}
+      />
+
+      {/* Collaboration Chat */}
+      <CollaborationChat 
+        isOpen={showChat} 
+        onClose={() => setShowChat(false)}
+        channelId="dashboard"
       />
     </DashboardLayout>
   );
