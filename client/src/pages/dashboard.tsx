@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Campaign, Call, Contact } from "@shared/schema";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,14 +8,34 @@ import MetricCard from "@/components/dashboard/MetricCard";
 import CampaignTable from "@/components/dashboard/CampaignTable";
 import CallList from "@/components/dashboard/CallList";
 import ContactList from "@/components/dashboard/ContactList";
+import OnboardingTour from "@/components/common/OnboardingTour";
 import { Button } from "@/components/ui/button";
-import { Phone, Upload, RefreshCcw, BarChart3, Calendar, MessageSquare, Clock } from "lucide-react";
+import { Phone, Upload, RefreshCcw, BarChart3, Calendar, MessageSquare, Clock, HelpCircle } from "lucide-react";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard: React.FC = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // Check if this is the user's first visit
+  useEffect(() => {
+    const onboardingComplete = localStorage.getItem('onboardingComplete');
+    const onboardingSkipped = localStorage.getItem('onboardingSkipped');
+    
+    // Only show onboarding if user hasn't completed or skipped it
+    if (!onboardingComplete && !onboardingSkipped) {
+      // Add a small delay to show onboarding after dashboard loads
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Fetch campaigns
   const { data: campaigns, isLoading: campaignsLoading } = useQuery<Campaign[]>({
@@ -61,6 +81,9 @@ const Dashboard: React.FC = () => {
           fullName: "Unknown",
           companyName: "Unknown",
           phoneNumber: "",
+          email: null,
+          industry: null,
+          notes: null,
           userId: 0,
           status: "",
           createdAt: new Date()
@@ -85,11 +108,27 @@ const Dashboard: React.FC = () => {
     </>
   );
 
+  // Function to open the guided tour manually
+  const handleOpenTour = () => {
+    setShowOnboarding(true);
+  };
+
+  // Enhanced dashboard actions with guided tour button
+  const enhancedDashboardActions = (
+    <>
+      {dashboardActions}
+      <Button variant="outline" onClick={handleOpenTour}>
+        <HelpCircle className="h-4 w-4 mr-2" />
+        {t("dashboard.guidedTour")}
+      </Button>
+    </>
+  );
+
   return (
     <DashboardLayout 
       title={t("common.dashboard")} 
       description={t("dashboard.monitorCampaigns")}
-      actions={dashboardActions}
+      actions={enhancedDashboardActions}
     >
       {/* Metrics cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -195,6 +234,20 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Onboarding Tour */}
+      <OnboardingTour 
+        open={showOnboarding} 
+        onOpenChange={setShowOnboarding}
+        onComplete={() => {
+          toast({
+            title: "Welcome to ReachImpact!",
+            description: "You're all set to start using the platform. Let's begin by setting up your profile.",
+          });
+          // Optionally redirect to profile page to encourage completion
+          setLocation("/profile");
+        }}
+      />
     </DashboardLayout>
   );
 };
