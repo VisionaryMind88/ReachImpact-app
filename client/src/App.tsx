@@ -24,6 +24,8 @@ import Campaigns from "@/pages/campaigns";
 import Analytics from "@/pages/analytics";
 import Settings from "@/pages/settings";
 import Billing from "@/pages/billing";
+import Calendar from "@/pages/calendar";
+import Messages from "@/pages/messages";
 import NotFound from "@/pages/not-found";
 
 // Import campaign pages
@@ -46,6 +48,8 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/settings" component={Settings} />
       <Route path="/billing" component={Billing} />
+      <Route path="/calendar" component={Calendar} />
+      <Route path="/messages" component={Messages} />
       
       {/* Demo routes */}
       <Route path="/demo">

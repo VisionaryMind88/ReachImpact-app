@@ -1,0 +1,62 @@
+You are an expert Senior React.js (Next.js) developer specialized in professional, pixel-perfect dashboard development, API integration (Google Calendar, Outlook, Twilio, GPT-4), Firebase full backend integration (Auth, Firestore, Storage) and bug-fixing front-end/backend clearly implemented.
+
+Currently, we have a ReachImpact App Dashboard "almost done", but your task now is clearly to fix all minor existing bugs (especially Calendar & Messages 404 errors), perfectly implement all additional improvements listed clearly below, and finalize this dashboard into a completely finished professional state, ready for production without any further fixes.
+
+✅ Precise Technical Tasks & Fixes to do clearly perfectly:
+
+📅 CALENDAR PAGE PERFECT FUNCTIONAL IMPLEMENTATION:
+Clearly fixing current "404 Page-Not-Found" issue professionally.
+Integrating Google & Outlook Calendar API professionally, where appointments made by our AI-caller are automatically pushed and synced into customer Google or Outlook calendar.
+Clearly visible upcoming appointments displayed clearly inside ReachImpact Dashboard:
+Date & time of the appointment clearly
+Company/Contact details (Name, company name, phone number, email) clearly visible
+Clearly professionally clickable calendar clearly interactive, clearly edit-appointment possibility professionally allowed clearly integrated instantly.
+💬 MESSAGES PAGE PERFECT PROFESSIONAL IMPLEMENTATION:
+Clearly fix current 404 issues at Messages Tab entirely professionally accessible/functionable.
+Clearly, professionally implemented display area clearly showing clearly and automatically all outgoing SMS & email messages (sent via Twilio & Firebase clearly visible).
+Clearly indicate sent-status (successful/pending/failed clearly professionally shown) & message text clearly readable clearly per each contact professionally integrated.
+🎯 LOGO ON LOGIN SCREEN:
+Professionally clearly and attractively implement the given provided logo removing clearly and professionally all background (transparent), clearly visible at login/register screen pixel-perfect centered naturally clearly looking professional welcoming the user clearly perfectly visible each device responseive.
+🏢 CUSTOMER COMPANY INFO clearly functionally integrated (critical AI calling info clearly necessary):
+Clearly implement these fields professionally required, saved securely Firebase, clearly retrievable by GPT-4 API clearly for perfect AI calling understanding and results:
+Company name clearly (Required)
+Company website URL clearly (Required: AI clearly reads website info GPT optimized automatically)
+Company products/services offered clearly (required for AI perfection)
+Clear extra essential suggested by you professionally needed from expert perspective as AI clearly needs context:
+Company’s target market/target customers clearly specified
+Short sales-unique pitch clearly (Why customer chooses their company) clearly professional
+Industry clearly professional identified
+All clearly collected data accessible by AI clearly GPT-4 integrated professionally automatic call-preparation intelligent usage clearly implemented professionally for perfect customer outreach clearly powerful performance.
+
+📺 CLEAR INTERACTIVE DEMO FUNCTIONALITY CLEARLY ADDED AUTOMATICALLY CLEARLY:
+Clearly built professional fully-interactive simulation (stand-alone clearly clicking button "Interactive Demo clearly Ready clickable"):
+Interactive AI pre-recorded professional dialogue scenarios clearly demo-usable clearly demonstrated.
+Fake/demo data clearly professionally visualized dashboard clearly shown explicitly "Demo Data Only professional clearly labeled everywhere".
+Simulated Call results & analytics visualization clearly interactively clickable clearly professionally animated clearly beautiful engaging without Twilio costs clearly demonstrated strictly demo purposes only clearly.
+🚨 CLEARLY FIX ALL EXISTING ERROR SCREENS:
+Clearly find, professionally debug & remove any existing/remaining errors or issues (404, loading, firebase errors etc.) professionally clearly fix fully professional stability clearly instantly ready.
+✅ 10 PROFESSIONALLY-SUGGESTED PERFECT EXTRA ENHANCEMENTS CLEARLY INCLUDED:
+Implement each clearly professionally and fully functioning instantly:
+
+Clearly added quick-start clearly guided onboarding tour clearly professional step-by-step clearly visually clearly interactive clearly welcome users.
+Real-time notification alerts clearly visible professionally upper-dashboard (calls success, demo requested & credits low clearly visible instantly)
+Professional comprehensive User-settings clearly editable user-friendly page clearly professional implemented.
+Advanced clearly search-filter functionality professionally implemented (Results clearly filterable professional clearly intuitive search fields clearly)
+Advanced clearly visual analytical statistics dashboard clearly perfect graphs clearly professional visual KPI representation clearly visible clearly.
+Professional easy data-export functionality (Excel/CSV report results export clearly perfect working)
+Professional UX improvements with clear tooltips & labels (explaining each clearly interactive element clearly user-friendly)
+Active clearly identified excel-import error-check clearly instantly prompting users clearly wrong formatting clearly professional relevant help clearly instant.
+Dynamic AI chat/phone call feedback clearly professional star-rating professionally clearly integrated (improve clear AI performance clearly professional customer satisfaction feedback)
+Professional embedded help/support-center page clearly integrated automatically clearly friendly clearly professional visuals videos FAQs support-friendly.
+✅ Clear Technical Requirements clearly integrated professionally delivered finished:
+
+Next.js, latest React.js clear professional optimization clearly pixel-perfect UI clearly responsive professional
+Firebase Auth/Firestore Cloud Functions, Cloud Storage professional integration clearly secured GDPR clearly compliant integration professionally handled clearly reliably scalable ready backend structure clearly production-ready.
+GPT-4 (OpenAI clear latest API secured integration clearly functional perfect)
+Twilio clear API verified integration SMS/Voice professionally ensured reliable communications (fully functioning)
+Stripe Payment clearly functional professional card-payments clearly smooth correctly working clearly integrated ready.
+Google/Outlook calendar API perfect integration professional automated clearly working smoothly real-time appointments clearly.
+Perfect Multilingual clearly translation dashboard switch MV clearly ready implemented (English primary default, Dutch, German, French, Spanish professionally provided GPT-automated translated clearly perfect).
+GitHub clearly integrated version-ready clearly instant deployment hosting (Vercel/Firebase Hosting) immediately professional ready deploy exactly one-click.
+Final Deliverable Clearly:
+Deliver clearly final fully working instantly deployable perfect ReachImpact dashboard, all functionalities, bug-free, pixel-perfect aesthetically professionally designed fully polished, ready immediate public launch clearly without any error clearly functional perfect.
