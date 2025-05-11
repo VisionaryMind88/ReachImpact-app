@@ -6,8 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Context Providers
-import AuthProvider from "@/contexts/AuthContext";
-import LanguageProvider from "@/contexts/LanguageContext";
+import AuthProviderSwitcher from "@/components/common/AuthProviderSwitcher";
 
 // Components
 import ChatWidget from "@/components/common/ChatWidget";
@@ -84,17 +83,12 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-            <ChatWidget />
-          </TooltipProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </QueryClientProvider>
+    <AuthProviderSwitcher>
+      <TooltipProvider>
+        <Router />
+        <ChatWidget />
+      </TooltipProvider>
+    </AuthProviderSwitcher>
   );
 }
 
