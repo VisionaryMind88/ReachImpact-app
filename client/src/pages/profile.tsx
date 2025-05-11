@@ -50,6 +50,10 @@ const Profile: React.FC = () => {
     industry: z.string().min(1, "Industry is required"),
     preferredLanguage: z.string().min(1, "Preferred language is required"),
     companyDescription: z.string().optional(),
+    companyWebsite: z.string().url("Please enter a valid URL").min(1, "Company website is required"),
+    productsServices: z.string().min(1, "Products/services information is required"),
+    targetMarket: z.string().min(1, "Target market information is required"),
+    salesPitch: z.string().min(1, "Sales pitch is required"),
   });
 
   type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -64,6 +68,10 @@ const Profile: React.FC = () => {
       industry: user?.industry || "",
       preferredLanguage: user?.preferredLanguage || "en",
       companyDescription: user?.companyDescription || "",
+      companyWebsite: user?.companyWebsite || "",
+      productsServices: user?.productsServices || "",
+      targetMarket: user?.targetMarket || "",
+      salesPitch: user?.salesPitch || "",
     },
     values: {
       fullName: user?.fullName || "",
@@ -72,6 +80,10 @@ const Profile: React.FC = () => {
       industry: user?.industry || "",
       preferredLanguage: user?.preferredLanguage || "en",
       companyDescription: user?.companyDescription || "",
+      companyWebsite: user?.companyWebsite || "",
+      productsServices: user?.productsServices || "",
+      targetMarket: user?.targetMarket || "",
+      salesPitch: user?.salesPitch || "",
     },
   });
 
@@ -159,34 +171,87 @@ const Profile: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    
-                    <FormField
-                      control={form.control}
-                      name="companyName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Company Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Acme Inc" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="industry"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Industry</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Technology" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  </div>
+                  
+                  <div className="border-t pt-6 mt-6">
+                    <h3 className="text-lg font-medium mb-4">Company Information</h3>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Company Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Acme Inc" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="industry"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Industry</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Technology" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="companyWebsite"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Company Website</FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://www.example.com" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              Our AI uses your website to understand your business better
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="productsServices"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Products/Services Offered</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Web development, marketing, consulting..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="targetMarket"
+                        render={({ field }) => (
+                          <FormItem className="col-span-2">
+                            <FormLabel>Target Market/Customer</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Small businesses in the healthcare sector..." {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              Describe your ideal customers or the market segment you target
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                   
                   <FormField
@@ -199,12 +264,34 @@ const Profile: React.FC = () => {
                           <Textarea
                             placeholder="Tell us about your company..."
                             className="resize-none"
-                            rows={4}
+                            rows={3}
                             {...field}
                           />
                         </FormControl>
                         <FormDescription>
                           This information helps our AI introduce itself properly when making calls on your behalf.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="salesPitch"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sales Unique Pitch</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="What makes your company unique? Why do customers choose you over competitors?"
+                            className="resize-none"
+                            rows={3}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          This helps our AI communicate your value proposition effectively
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
