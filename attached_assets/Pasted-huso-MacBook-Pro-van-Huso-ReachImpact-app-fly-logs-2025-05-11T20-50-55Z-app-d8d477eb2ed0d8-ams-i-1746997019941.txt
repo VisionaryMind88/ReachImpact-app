@@ -1,0 +1,102 @@
+huso@MacBook-Pro-van-Huso ReachImpact-app % fly logs
+2025-05-11T20:50:55Z app[d8d477eb2ed0d8] ams [info] INFO Preparing to run: `docker-entrypoint.sh npm start` as root
+2025-05-11T20:50:55Z app[d8d477eb2ed0d8] ams [info] INFO [fly api proxy] listening at /.fly/api
+2025-05-11T20:50:55Z runner[d8d477eb2ed0d8] ams [info]Machine started in 1.059s
+2025-05-11T20:50:55Z app[d8d477eb2ed0d8] ams [info]2025/05/11 20:50:55 INFO SSH listening listen_address=[fdaa:18:cd43:a7b:3bb:d8a8:85f1:2]:22
+2025-05-11T20:50:55Z proxy[d8d477eb2ed0d8] ams [error][PC01] instance refused connection. is your app listening on 0.0.0.0:5000? make sure it is not only listening on 127.0.0.1 (hint: look at your startup logs, servers often print the address they are listening on)
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]> rest-express@1.0.0 start
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]> node server/index.js
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]node:internal/modules/cjs/loader:1143
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]  throw err;
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]  ^
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]Error: Cannot find module '/app/server/index.js'
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]    at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]    at node:internal/main/run_main_module:28:49 {
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]  code: 'MODULE_NOT_FOUND',
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]  requireStack: []
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]}
+2025-05-11T20:50:56Z app[d8d477eb2ed0d8] ams [info]Node.js v18.20.8
+2025-05-11T20:50:57Z app[d8d477eb2ed0d8] ams [info] INFO Main child exited normally with code: 1
+2025-05-11T20:50:57Z app[d8d477eb2ed0d8] ams [info] INFO Starting clean up.
+2025-05-11T20:50:58Z app[d8d477eb2ed0d8] ams [info] WARN could not unmount /rootfs: EINVAL: Invalid argument
+2025-05-11T20:50:58Z app[d8d477eb2ed0d8] ams [info][    4.432227] reboot: Restarting system
+2025-05-11T20:50:59Z proxy[d899940a4e6478] ams [error][PR04] could not find a good candidate within 20 attempts at load balancing
+2025-05-11T20:50:59Z proxy[d899940a4e6478] ams [info]Starting machine
+2025-05-11T20:50:59Z proxy[d899940a4e6478] ams [error][PM07] failed to change machine state: machine still active, refusing to start
+2025-05-11T20:51:16Z app[d8d477eb2ed0d8] ams [info]2025-05-11T20:51:16.924215146 [01JV0HRNP827WGGZMSAXZPJBHB:main] Running Firecracker v1.7.0
+2025-05-11T20:51:17Z app[d8d477eb2ed0d8] ams [info] INFO Starting init (commit: a1a45272)...
+2025-05-11T20:51:17Z app[d8d477eb2ed0d8] ams [info] INFO Preparing to run: `docker-entrypoint.sh npm start` as root
+2025-05-11T20:51:17Z app[d8d477eb2ed0d8] ams [info] INFO [fly api proxy] listening at /.fly/api
+2025-05-11T20:51:17Z runner[d8d477eb2ed0d8] ams [info]Machine started in 1.034s
+2025-05-11T20:51:18Z app[d8d477eb2ed0d8] ams [info]2025/05/11 20:51:18 INFO SSH listening listen_address=[fdaa:18:cd43:a7b:3bb:d8a8:85f1:2]:22
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]> rest-express@1.0.0 start
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]> node server/index.js
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]node:internal/modules/cjs/loader:1143
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]  throw err;
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]  ^
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]Error: Cannot find module '/app/server/index.js'
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]    at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]    at node:internal/main/run_main_module:28:49 {
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]  code: 'MODULE_NOT_FOUND',
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]  requireStack: []
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]}
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info]Node.js v18.20.8
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info] INFO Main child exited normally with code: 1
+2025-05-11T20:51:19Z app[d8d477eb2ed0d8] ams [info] INFO Starting clean up.
+2025-05-11T20:51:20Z app[d8d477eb2ed0d8] ams [info] WARN could not unmount /rootfs: EINVAL: Invalid argument
+2025-05-11T20:51:20Z app[d8d477eb2ed0d8] ams [info][    3.627878] reboot: Restarting system
+2025-05-11T20:51:23Z app[d8d477eb2ed0d8] ams [info]2025-05-11T20:51:23.639664814 [01JV0HRNP827WGGZMSAXZPJBHB:main] Running Firecracker v1.7.0
+2025-05-11T20:51:24Z app[d8d477eb2ed0d8] ams [info] INFO Starting init (commit: a1a45272)...
+2025-05-11T20:51:24Z app[d8d477eb2ed0d8] ams [info] INFO Preparing to run: `docker-entrypoint.sh npm start` as root
+2025-05-11T20:51:24Z app[d8d477eb2ed0d8] ams [info] INFO [fly api proxy] listening at /.fly/api
+2025-05-11T20:51:24Z runner[d8d477eb2ed0d8] ams [info]Machine started in 1.041s
+2025-05-11T20:51:24Z app[d8d477eb2ed0d8] ams [info]2025/05/11 20:51:24 INFO SSH listening listen_address=[fdaa:18:cd43:a7b:3bb:d8a8:85f1:2]:22
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]> rest-express@1.0.0 start
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]> node server/index.js
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]node:internal/modules/cjs/loader:1143
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]  throw err;
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]  ^
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]Error: Cannot find module '/app/server/index.js'
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]    at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]    at node:internal/main/run_main_module:28:49 {
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]  code: 'MODULE_NOT_FOUND',
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]  requireStack: []
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]}
+2025-05-11T20:51:25Z app[d8d477eb2ed0d8] ams [info]Node.js v18.20.8
+2025-05-11T20:51:26Z app[d8d477eb2ed0d8] ams [info] INFO Main child exited normally with code: 1
+2025-05-11T20:51:26Z app[d8d477eb2ed0d8] ams [info] INFO Starting clean up.
+2025-05-11T20:51:28Z app[d8d477eb2ed0d8] ams [info] WARN could not unmount /rootfs: EINVAL: Invalid argument
+2025-05-11T20:51:28Z app[d8d477eb2ed0d8] ams [info][    4.430566] reboot: Restarting system
+2025-05-11T20:51:28Z runner[d8d477eb2ed0d8] ams [info]machine has reached its max restart count of 10
+2025-05-11T20:51:44Z app[d899940a4e6478] ams [info]2025-05-11T20:51:44.754877630 [01JV0HQV4FY6014JK88MRHMF7W:main] Running Firecracker v1.7.0
+2025-05-11T20:51:45Z app[d899940a4e6478] ams [info] INFO Starting init (commit: a1a45272)...
+2025-05-11T20:51:45Z app[d899940a4e6478] ams [info] INFO Preparing to run: `docker-entrypoint.sh npm start` as root
+2025-05-11T20:51:45Z app[d899940a4e6478] ams [info] INFO [fly api proxy] listening at /.fly/api
+2025-05-11T20:51:45Z runner[d899940a4e6478] ams [info]Machine started in 1.218s
+2025-05-11T20:51:46Z app[d899940a4e6478] ams [info]2025/05/11 20:51:46 INFO SSH listening listen_address=[fdaa:18:cd43:a7b:3f8:7b87:7210:2]:22
+2025-05-11T20:51:46Z app[d899940a4e6478] ams [info]> rest-express@1.0.0 start
+2025-05-11T20:51:46Z app[d899940a4e6478] ams [info]> node server/index.js
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]node:internal/modules/cjs/loader:1143
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]  throw err;
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]  ^
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]Error: Cannot find module '/app/server/index.js'
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]    at Module._load (node:internal/modules/cjs/loader:981:27)
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]    at node:internal/main/run_main_module:28:49 {
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]  code: 'MODULE_NOT_FOUND',
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]  requireStack: []
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]}
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info]Node.js v18.20.8
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info] INFO Main child exited normally with code: 1
+2025-05-11T20:51:47Z app[d899940a4e6478] ams [info] INFO Starting clean up.
+2025-05-11T20:51:50Z app[d899940a4e6478] ams [info] WARN could not unmount /rootfs: EINVAL: Invalid argument
+2025-05-11T20:51:50Z app[d899940a4e6478] ams [info][    5.462251] reboot: Restarting system
+2025-05-11T20:51:50Z runner[d899940a4e6478] ams [info]machine has reached its max restart count of 10
+
