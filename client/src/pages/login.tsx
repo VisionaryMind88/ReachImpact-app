@@ -32,9 +32,9 @@ const Login: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <img 
-            src="/logo.svg"
+            src="/reachimpact-logo.svg"
             alt="ReachImpact Logo" 
-            className="h-24 w-24"
+            className="h-36 w-auto"
             onError={(e) => {
               // Fallback if the logo image fails to load
               e.currentTarget.style.display = 'none';
