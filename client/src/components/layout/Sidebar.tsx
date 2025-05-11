@@ -85,8 +85,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
           <img
             src="/images/reachimpact-logo-new.png"
             alt="ReachImpact Logo"
-            className="h-8 w-auto"
-            style={{ maxWidth: '140px' }}
+            className="h-10 w-auto"
+            style={{ maxWidth: '180px' }}
             onError={(e) => {
               // Fallback if the logo image fails to load
               e.currentTarget.style.display = 'none';
@@ -96,7 +96,6 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
               e.currentTarget.parentNode?.appendChild(fallback);
             }}
           />
-          <span className="ml-2 text-xl font-semibold text-gray-900">ReachImpact</span>
         </div>
         
         <div className="flex-1 flex flex-col overflow-y-auto pt-5 pb-4">
