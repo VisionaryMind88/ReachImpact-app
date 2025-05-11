@@ -170,8 +170,8 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
           ) : messages.length === 0 ? (
             <div className="flex justify-center items-center h-full text-center text-muted-foreground">
               <div>
-                <p>No messages yet</p>
-                <p className="text-xs">Be the first to send a message!</p>
+                <p>{t("chat.noMessages", "No messages yet")}</p>
+                <p className="text-xs">{t("chat.beFirst", "Be the first to send a message!")}</p>
               </div>
             </div>
           ) : (
@@ -210,7 +210,7 @@ const CollaborationChat: React.FC<CollaborationChatProps> = ({
             ref={inputRef}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Type a message..."
+            placeholder={t("chat.typePlaceholder", "Type a message...")}
             className="text-sm"
           />
           <Button type="submit" size="icon" disabled={!inputValue.trim()}>
