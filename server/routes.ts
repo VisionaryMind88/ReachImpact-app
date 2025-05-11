@@ -11,6 +11,7 @@ import path from "path";
 import os from "os";
 import { makeOutboundCall, getCallStatus as getTwilioCallStatus, endCall as endTwilioCall, sendSms } from "./twilio";
 import { transcribeAudio } from "./openai";
+import { hashPassword, verifyPassword } from "./auth-utils";
 
 // Extend Express Request to include session
 declare module "express" {
@@ -30,15 +31,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "User with this email already exists" });
       }
       
-      const user = await storage.createUser(userData);
+      // Hash the user's password before storing it
+      const hashedPassword = hashPassword(userData.password);
+      
+      // Create the user with the hashed password
+      const userWithHashedPassword = {
+        ...userData,
+        password: hashedPassword
+      };
+      
+      const user = await storage.createUser(userWithHashedPassword);
+      
       // Don't return password in response
-      const { password, ...userWithoutPassword } = userData;
+      const { password, ...userWithoutPassword } = user;
+      
+      // Set up session for the newly registered user
+      req.session.userId = user.id;
       
       return res.status(201).json(userWithoutPassword);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid user data", errors: error.errors });
       }
+      console.error("Registration error:", error);
       return res.status(500).json({ message: "Failed to create user" });
     }
   });
@@ -57,15 +72,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid email or password" });
       }
       
-      // In a real app, we would compare hashed passwords
-      // For this demo, we'll just compare plaintext (not secure)
-      if (password !== (req.body.password as string)) {
+      // Verify the password using our secure hash verification
+      if (!verifyPassword(password, user.password)) {
+        // Use the same error message to not leak info about existing emails
         return res.status(401).json({ message: "Invalid email or password" });
       }
       
-      // Create session (simplified for demo)
+      // Create session
       req.session.userId = user.id;
       
+      // Set special role for michael@reachimpact.io for admin access
+      let role = user.role;
+      if (email === "michael@reachimpact.io") {
+        role = "admin";
+      }
+      
+      // Don't include password in the response
       return res.json({ 
         id: user.id,
         email: user.email,
@@ -73,9 +95,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         companyName: user.companyName,
         preferredLanguage: user.preferredLanguage,
         aiCredits: user.aiCredits,
-        role: user.role
+        role: role
       });
     } catch (error) {
+      console.error("Login error:", error);
       return res.status(500).json({ message: "Login failed" });
     }
   });
