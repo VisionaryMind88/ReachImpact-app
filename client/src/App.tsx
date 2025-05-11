@@ -8,6 +8,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import AuthProvider from "@/contexts/AuthContext";
 import LanguageProvider from "@/contexts/LanguageContext";
 
+// Components
+import ChatWidget from "@/components/common/ChatWidget";
+
 // Pages
 import Index from "@/pages/index";
 import Login from "@/pages/login";
@@ -55,6 +58,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
+            <ChatWidget />
           </TooltipProvider>
         </AuthProvider>
       </LanguageProvider>
