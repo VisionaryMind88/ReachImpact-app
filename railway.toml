@@ -1,14 +1,9 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci --include=dev --include=optional && npm run build"
-watchPatterns = ["server/**", "client/**", "shared/**", "package.json"]
+buildCommand = "npm ci && npm run build"
 
 [deploy]
-startCommand = "NODE_ENV=production node dist/index.js"
-healthcheckPath = "/"
-healthcheckTimeout = 100
-restartPolicyType = "on-failure"
-numReplicas = 1
+startCommand = "node dist/index.js"
 
 [nixpacks]
 nodeVersion = "20"
@@ -17,15 +12,4 @@ nodeVersion = "20"
   [environments.production]
   PORT = "5000"
   NODE_ENV = "production"
-  HOST = "0.0.0.0"
-  
-  [environments.development]
-  PORT = "5000"
-  NODE_ENV = "development"
-  HOST = "0.0.0.0"
-
-[[volumes]]
-name = "uploads"
-path = "/app/uploads"
-mountPath = "/app/uploads"
 
