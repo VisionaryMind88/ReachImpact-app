@@ -31,12 +31,9 @@ COPY --from=deps --chown=fastify:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=fastify:nodejs /app/dist ./dist
 COPY --from=builder --chown=fastify:nodejs /app/package.json ./
 
-# Set environment for fly volume
-VOLUME /data
-
-# Create uploads directory
-RUN mkdir -p /data/uploads
-RUN chown -R fastify:nodejs /data
+# Create uploads directory within the application directory
+RUN mkdir -p ./uploads
+RUN chown -R fastify:nodejs ./uploads
 
 # Copy additional required files
 COPY --chown=fastify:nodejs ./shared ./shared
