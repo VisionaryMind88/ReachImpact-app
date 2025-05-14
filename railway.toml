@@ -1,15 +1,18 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci && npm run build"
+buildCommand = "rm -rf node_modules/.cache || true && npm ci --no-audit --no-fund && npm run build"
 
 [deploy]
 startCommand = "node dist/index.js"
+restartPolicyType = "on-failure"
 
 [nixpacks]
 nodeVersion = "20"
+installCommand = "npm ci --no-audit --no-fund"
 
 [environments]
   [environments.production]
   PORT = "5000"
   NODE_ENV = "production"
+  NPM_CONFIG_LEGACY_PEER_DEPS = "true"
 
